@@ -17,22 +17,28 @@ export default function RankingList() {
   }, [activeTab]);
 
   async function fetchDemands(sort: SortType) {
-    let query = supabase.from("demands").select("*");
+    const { data } = await supabase.from("demands").select("*").limit(50);
+
+    if (!data) return setDemands([]);
+
+    let sorted = data as Demand[];
 
     switch (sort) {
       case "hot":
-        query = query.order("votes", { ascending: false });
+        // 综合分排序：votes + paid_votes * 3
+        sorted = sorted.sort((a, b) => getDemandScore(b) - getDemandScore(a));
         break;
       case "paid":
-        query = query.order("paid_votes", { ascending: false });
+        sorted = sorted.sort((a, b) => b.paid_votes - a.paid_votes);
         break;
       case "latest":
-        query = query.order("created_at", { ascending: false });
+        sorted = sorted.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
         break;
     }
 
-    const { data } = await query.limit(10);
-    if (data) setDemands(data as Demand[]);
+    setDemands(sorted.slice(0, 10));
   }
 
   return (

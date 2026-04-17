@@ -9,6 +9,7 @@ import VoteButtons from "./VoteButtons";
 
 interface DemandCardProps {
   demand: Demand;
+  onVoted?: () => void;
 }
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -17,7 +18,7 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
   launched: { label: "已上线", variant: "outline" },
 };
 
-export default function DemandCard({ demand }: DemandCardProps) {
+export default function DemandCard({ demand, onVoted }: DemandCardProps) {
   const status = statusConfig[demand.status] || statusConfig.open;
 
   return (
@@ -46,7 +47,7 @@ export default function DemandCard({ demand }: DemandCardProps) {
             目标用户：{demand.target_user}
           </div>
           <div onClick={(e) => e.preventDefault()}>
-            <VoteButtons demand={demand} compact />
+            <VoteButtons demand={demand} compact onVoted={onVoted} />
           </div>
         </CardContent>
       </Card>

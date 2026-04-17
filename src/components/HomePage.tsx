@@ -1,0 +1,116 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { getDemandScore } from "@/types/demand";
+import type { Demand } from "@/types/demand";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, Flame } from "lucide-react";
+import HeroSection from "@/components/HeroSection";
+import DemandCard from "@/components/DemandCard";
+import RankingList from "@/components/RankingList";
+import LaunchedProducts from "@/components/LaunchedProducts";
+
+export default function HomePage() {
+  const [demands, setDemands] = useState<Demand[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDemands();
+  }, []);
+
+  async function fetchDemands() {
+    setLoading(true);
+    try {
+      const { data } = await supabase.from("demands").select("*").limit(50);
+      if (data) {
+        const sorted = (data as Demand[]).sort(
+          (a, b) => getDemandScore(b) - getDemandScore(a)
+        ).slice(0, 9);
+        setDemands(sorted);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main>
+      <HeroSection />
+
+      {/* 热门需求 */}
+      <section id="demands" className="py-16">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+            <Flame className="size-7 text-primary" />
+            今日最热需求
+          </h2>
+          <Link href="/submit">
+            <Button variant="outline" size="sm">
+              <Plus className="size-4" />
+              提交需求
+            </Button>
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="bg-bg-card">
+                <CardHeader>
+                  <Skeleton className="h-5 w-16 mb-2" />
+                  <Skeleton className="h-6 w-3/4" />
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <div className="flex gap-2 pt-2">
+                    <Skeleton className="h-8 w-24" />
+                    <Skeleton className="h-8 w-24" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : demands.length === 0 ? (
+          <div className="text-center py-20 text-text-secondary">
+            <p className="text-lg mb-4">还没有需求</p>
+            <Link href="/submit" className="text-primary hover:underline">
+              提交第一个需求 →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {demands.map((demand) => (
+              <DemandCard key={demand.id} demand={demand} onVoted={fetchDemands} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <RankingList />
+      <LaunchedProducts />
+
+      {/* CTA */}
+      <section className="py-20 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">
+          没找到你想要的？
+        </h2>
+        <p className="text-text-secondary mb-8">
+          写下你的需求，也许下一个爆款就是它
+        </p>
+        <Link href="/submit">
+          <Button size="lg">
+            提交需求
+          </Button>
+        </Link>
+        <div className="mt-6 text-sm text-text-secondary">
+          每周开发票数最高的需求
+        </div>
+      </section>
+    </main>
+  );
+}

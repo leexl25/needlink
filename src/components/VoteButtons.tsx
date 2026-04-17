@@ -9,6 +9,7 @@ import type { Demand } from "@/types/demand";
 interface VoteButtonsProps {
   demand: Demand;
   compact?: boolean;
+  onVoted?: () => void;
 }
 
 function getCookie(name: string): string | null {
@@ -16,7 +17,7 @@ function getCookie(name: string): string | null {
   return match ? match[2] : null;
 }
 
-export default function VoteButtons({ demand, compact = false }: VoteButtonsProps) {
+export default function VoteButtons({ demand, compact = false, onVoted }: VoteButtonsProps) {
   const [votes, setVotes] = useState(demand.votes);
   const [paidVotes, setPaidVotes] = useState(demand.paid_votes);
   const [voted, setVoted] = useState<"like" | "pay" | null>(null);
@@ -55,6 +56,7 @@ export default function VoteButtons({ demand, compact = false }: VoteButtonsProp
       }
       setVoted(type);
       setShowShareHint(true);
+      onVoted?.();
     } finally {
       setLoading(false);
     }
