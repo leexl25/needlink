@@ -1,6 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Copy, Share2, Check } from "lucide-react";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -20,8 +29,6 @@ export default function ShareModal({
   demandId,
 }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
-
-  if (!isOpen) return null;
 
   const shareUrl =
     typeof window !== "undefined"
@@ -43,47 +50,40 @@ export default function ShareModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-bg-card rounded-xl border border-white/10 p-6 max-w-sm w-full mx-4">
-        <h3 className="text-lg font-bold mb-2">🎉 投票成功！</h3>
-        <p className="text-text-secondary text-sm mb-4">
-          「{demandTitle}」当前排名 #{rank}
-        </p>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-bg-card border-white/10">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            🎉 投票成功！
+          </DialogTitle>
+          <DialogDescription>
+            「{demandTitle}」当前排名 #{rank}
+          </DialogDescription>
+        </DialogHeader>
 
         {gapToNext > 0 && (
-          <div className="bg-primary/10 rounded-lg px-4 py-3 mb-4 text-sm">
+          <div className="bg-primary/10 rounded-lg px-4 py-3 text-sm">
             <span className="text-primary font-medium">
               再获得 {gapToNext} 票就会被开发
             </span>
           </div>
         )}
 
-        <p className="text-sm text-text-secondary mb-4">
+        <p className="text-sm text-text-secondary">
           分享给朋友，让更多人投票！
         </p>
 
         <div className="flex gap-3">
-          <button
-            onClick={copyLink}
-            className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-medium transition-colors"
-          >
+          <Button onClick={copyLink} className="flex-1">
+            {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             {copied ? "已复制！" : "复制链接"}
-          </button>
-          <button
-            onClick={shareToTwitter}
-            className="flex-1 px-4 py-2 bg-bg-hover border border-white/10 rounded-lg text-sm font-medium hover:border-primary/30 transition-colors"
-          >
+          </Button>
+          <Button variant="outline" onClick={shareToTwitter} className="flex-1">
+            <Share2 className="size-4" />
             分享到 Twitter
-          </button>
+          </Button>
         </div>
-
-        <button
-          onClick={onClose}
-          className="mt-4 w-full text-center text-sm text-text-secondary hover:text-text-primary transition-colors"
-        >
-          关闭
-        </button>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

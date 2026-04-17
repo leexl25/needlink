@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Flame, Plus } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -14,18 +18,14 @@ export default function HeroSection() {
           你投票，我开发。票数最高的需求，每周上线一个。
         </p>
         <div className="mt-8 flex gap-4 justify-center md:justify-start">
-          <Link
-            href="#demands"
-            className="px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors"
-          >
+          <Button render={<Link href="#demands" />} size="lg">
+            <Flame className="size-4" />
             查看热门需求
-          </Link>
-          <Link
-            href="/submit"
-            className="px-6 py-3 border border-primary text-primary hover:bg-primary/10 rounded-lg font-medium transition-colors"
-          >
+          </Button>
+          <Button render={<Link href="/submit" />} variant="outline" size="lg">
+            <Plus className="size-4" />
             提一个需求
-          </Link>
+          </Button>
         </div>
       </div>
 
@@ -42,7 +42,6 @@ export default function HeroSection() {
   );
 }
 
-/** 伪实时滚动预览 — 后续接入真实数据 */
 function TrendingPreview() {
   const items = [
     { title: "AI 自动生成周报/日报", votes: 1280 },
@@ -63,7 +62,10 @@ function TrendingPreview() {
             <span className="text-accent font-mono mr-2">#{i + 1}</span>
             {item.title}
           </span>
-          <span className="text-primary font-medium">{item.votes} 票</span>
+          <span className="text-primary font-medium flex items-center gap-1">
+            <Flame className="size-3" />
+            {item.votes}
+          </span>
         </li>
       ))}
     </ul>

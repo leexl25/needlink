@@ -1,6 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 const ROLES = ["上班族", "自媒体", "学生", "开发者", "电商卖家", "设计师", "其他"];
@@ -63,17 +68,14 @@ export default function SubmitForm() {
   if (submitted) {
     return (
       <div className="text-center py-20">
-        <div className="text-4xl mb-4">🎉</div>
+        <CheckCircle className="size-16 text-success mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-2">需求已提交！</h2>
         <p className="text-text-secondary mb-8">
           审核通过后会在首页展示，请关注排行榜。
         </p>
-        <a
-          href="/"
-          className="px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors inline-block"
-        >
+        <Button render={<a href="/" />} size="lg">
           返回首页
-        </a>
+        </Button>
       </div>
     );
   }
@@ -81,132 +83,117 @@ export default function SubmitForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
       {error && (
-        <div className="bg-danger/10 text-danger px-4 py-3 rounded-lg text-sm">
+        <div className="bg-danger/10 text-danger px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+          <AlertCircle className="size-4" />
           {error}
         </div>
       )}
 
       {/* 你是谁 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
+      <div className="space-y-2">
+        <Label>
           你是谁（角色）<span className="text-danger">*</span>
-        </label>
+        </Label>
         <div className="flex flex-wrap gap-2">
           {ROLES.map((role) => (
-            <button
+            <Button
               key={role}
               type="button"
+              size="sm"
+              variant={selectedRole === role ? "default" : "secondary"}
               onClick={() => handleRoleSelect(role)}
-              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-                selectedRole === role
-                  ? "bg-primary text-white"
-                  : "bg-bg-card text-text-secondary hover:bg-bg-hover"
-              }`}
             >
               {role}
-            </button>
+            </Button>
           ))}
         </div>
         {selectedRole === "其他" && (
-          <input
-            type="text"
+          <Input
             value={form.custom_role}
             onChange={(e) =>
               setForm((f) => ({ ...f, custom_role: e.target.value, target_user: e.target.value }))
             }
             placeholder="请描述你的角色"
-            className="mt-2 w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none"
           />
         )}
       </div>
 
       {/* 需求标题 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
+      <div className="space-y-2">
+        <Label htmlFor="title">
           需求标题 <span className="text-danger">*</span>
-        </label>
-        <input
-          type="text"
+        </Label>
+        <Input
+          id="title"
           required
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
           placeholder="一句话描述你想要的产品"
-          className="w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none"
         />
       </div>
 
       {/* 问题描述 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
+      <div className="space-y-2">
+        <Label htmlFor="problem">
           你遇到了什么问题 <span className="text-danger">*</span>
-        </label>
-        <textarea
+        </Label>
+        <Textarea
+          id="problem"
           required
           minLength={20}
           rows={3}
           value={form.problem}
           onChange={(e) => setForm((f) => ({ ...f, problem: e.target.value }))}
           placeholder="具体描述你遇到的痛点场景（至少20字）"
-          className="w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none resize-none"
         />
       </div>
 
       {/* 当前方案 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
-          你现在怎么解决的（选填）
-        </label>
-        <textarea
+      <div className="space-y-2">
+        <Label htmlFor="current_solution">你现在怎么解决的（选填）</Label>
+        <Textarea
+          id="current_solution"
           rows={2}
           value={form.current_solution}
           onChange={(e) =>
             setForm((f) => ({ ...f, current_solution: e.target.value }))
           }
           placeholder="你目前是怎么处理这个问题的"
-          className="w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none resize-none"
         />
       </div>
 
       {/* 理想方案 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
-          你希望怎么解决（选填）
-        </label>
-        <textarea
+      <div className="space-y-2">
+        <Label htmlFor="ideal_solution">你希望怎么解决（选填）</Label>
+        <Textarea
+          id="ideal_solution"
           rows={2}
           value={form.ideal_solution}
           onChange={(e) =>
             setForm((f) => ({ ...f, ideal_solution: e.target.value }))
           }
           placeholder="如果有工具能解决，你希望它是什么样的"
-          className="w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none resize-none"
         />
       </div>
 
       {/* 昵称 */}
-      <div>
-        <label className="block text-sm font-medium mb-2">
-          你的昵称（选填，会显示为发起人）
-        </label>
-        <input
-          type="text"
+      <div className="space-y-2">
+        <Label htmlFor="submitter_name">你的昵称（选填，会显示为发起人）</Label>
+        <Input
+          id="submitter_name"
           value={form.submitter_name}
           onChange={(e) =>
             setForm((f) => ({ ...f, submitter_name: e.target.value }))
           }
           placeholder="不填则匿名"
-          className="w-full px-4 py-2 bg-bg-card border border-white/10 rounded-lg text-sm focus:border-primary focus:outline-none"
         />
       </div>
 
       {/* 提交按钮 */}
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors disabled:opacity-50"
-      >
+      <Button type="submit" disabled={submitting} size="lg" className="w-full">
+        <Send className="size-4" />
         {submitting ? "提交中..." : "提交需求"}
-      </button>
+      </Button>
     </form>
   );
 }

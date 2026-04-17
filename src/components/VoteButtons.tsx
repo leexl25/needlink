@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ThumbsUp, Coins } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Demand } from "@/types/demand";
 
@@ -58,32 +60,27 @@ export default function VoteButtons({ demand, compact = false }: VoteButtonsProp
     }
   }
 
-  const size = compact ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm";
-
   return (
     <div className="flex items-center gap-2">
-      <button
+      <Button
+        variant={voted === "like" ? "default" : "secondary"}
+        size={compact ? "sm" : "default"}
         onClick={() => handleVote("like")}
         disabled={loading || voted !== null}
-        className={`${size} rounded-lg transition-all ${
-          voted === "like"
-            ? "bg-primary/20 text-primary border border-primary/30"
-            : "bg-bg-hover text-text-secondary hover:text-text-primary border border-transparent hover:border-white/10"
-        } disabled:opacity-50`}
       >
-        👍 想要 {votes}
-      </button>
-      <button
+        <ThumbsUp className="size-4" />
+        想要 {votes}
+      </Button>
+      <Button
+        variant={voted === "pay" ? "default" : "secondary"}
+        size={compact ? "sm" : "default"}
         onClick={() => handleVote("pay")}
         disabled={loading || voted !== null}
-        className={`${size} rounded-lg transition-all ${
-          voted === "pay"
-            ? "bg-accent/20 text-accent border border-accent/30"
-            : "bg-bg-hover text-text-secondary hover:text-text-primary border border-transparent hover:border-white/10"
-        } disabled:opacity-50`}
+        className={voted === "pay" ? "bg-accent text-black hover:bg-accent-hover" : ""}
       >
-        💰 愿付费 {paidVotes}
-      </button>
+        <Coins className="size-4" />
+        愿付费 {paidVotes}
+      </Button>
       {showShareHint && (
         <span className="text-xs text-primary animate-pulse">已投票！分享让更多人看到</span>
       )}
