@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { getDemandScore } from "@/types/demand";
-import type { Demand } from "@/types/demand";
+import type { Demand, Product } from "@/types/demand";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,23 +16,27 @@ import LaunchedProducts from "@/components/LaunchedProducts";
 
 export default function HomePage() {
   const [demands, setDemands] = useState<Demand[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDemands();
-  }, []);
-
-  async function fetchDemands() {
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await supabase.from("demands").select("*").limit(50);
-      if (data) {
-        setDemands(data as Demand[]);
-      }
+      const [demandsRes, productsRes] = await Promise.all([
+        supabase.from("demands").select("*").limit(50),
+        supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
+      ]);
+
+      if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
+      if (productsRes.data) setProducts(productsRes.data as Product[]);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
 
   // 首页展示：按综合分排序取前 9
   const topDemands = [...demands]
@@ -87,16 +91,14 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {topDemands.map((demand) => (
-              <DemandCard key={demand.id} demand={demand} onVoted={fetchDemands} />
+              <DemandCard key={demand.id} demand={demand} onVoted={fetchAll} />
             ))}
           </div>
         )}
       </section>
 
-      {/* 排行榜：复用同一份数据，不再重复请求 */}
       <RankingList allDemands={demands} />
-
-      <LaunchedProducts />
+      <LaunchedProducts products={products} />
 
       {/* CTA */}
       <section className="py-20 text-center">

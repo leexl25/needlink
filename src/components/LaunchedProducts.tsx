@@ -1,23 +1,13 @@
-import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Rocket, Users, ExternalLink } from "lucide-react";
 import type { Product } from "@/types/demand";
 
-export default async function LaunchedProducts() {
-  let products: Product[] = [];
+interface LaunchedProductsProps {
+  products: Product[];
+}
 
-  try {
-    const { data } = await supabase
-      .from("products")
-      .select("*")
-      .order("launched_at", { ascending: false })
-      .limit(6);
-    products = (data as Product[]) || [];
-  } catch {
-    return null;
-  }
-
-  if (products.length === 0) {
+export default function LaunchedProducts({ products }: LaunchedProductsProps) {
+  if (!products || products.length === 0) {
     return null;
   }
 
