@@ -27,15 +27,17 @@ export default function HomePage() {
     try {
       const { data } = await supabase.from("demands").select("*").limit(50);
       if (data) {
-        const sorted = (data as Demand[]).sort(
-          (a, b) => getDemandScore(b) - getDemandScore(a)
-        ).slice(0, 9);
-        setDemands(sorted);
+        setDemands(data as Demand[]);
       }
     } finally {
       setLoading(false);
     }
   }
+
+  // 首页展示：按综合分排序取前 9
+  const topDemands = [...demands]
+    .sort((a, b) => getDemandScore(b) - getDemandScore(a))
+    .slice(0, 9);
 
   return (
     <main>
@@ -75,7 +77,7 @@ export default function HomePage() {
               </Card>
             ))}
           </div>
-        ) : demands.length === 0 ? (
+        ) : topDemands.length === 0 ? (
           <div className="text-center py-20 text-text-secondary">
             <p className="text-lg mb-4">还没有需求</p>
             <Link href="/submit" className="text-primary hover:underline">
@@ -84,14 +86,16 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {demands.map((demand) => (
+            {topDemands.map((demand) => (
               <DemandCard key={demand.id} demand={demand} onVoted={fetchDemands} />
             ))}
           </div>
         )}
       </section>
 
-      <RankingList />
+      {/* 排行榜：复用同一份数据，不再重复请求 */}
+      <RankingList allDemands={demands} />
+
       <LaunchedProducts />
 
       {/* CTA */}

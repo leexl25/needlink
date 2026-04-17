@@ -1,45 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Flame, DollarSign, Clock, Trophy } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import type { Demand, SortType } from "@/types/demand";
 import { getDemandScore } from "@/types/demand";
 
-export default function RankingList() {
+interface RankingListProps {
+  allDemands: Demand[];
+}
+
+export default function RankingList({ allDemands }: RankingListProps) {
   const [activeTab, setActiveTab] = useState<SortType>("hot");
-  const [demands, setDemands] = useState<Demand[]>([]);
 
-  useEffect(() => {
-    fetchDemands(activeTab);
-  }, [activeTab]);
+  const rankedDemands = useMemo(() => {
+    const sorted = [...allDemands];
 
-  async function fetchDemands(sort: SortType) {
-    const { data } = await supabase.from("demands").select("*").limit(50);
-
-    if (!data) return setDemands([]);
-
-    let sorted = data as Demand[];
-
-    switch (sort) {
+    switch (activeTab) {
       case "hot":
-        // 综合分排序：votes + paid_votes * 3
-        sorted = sorted.sort((a, b) => getDemandScore(b) - getDemandScore(a));
+        sorted.sort((a, b) => getDemandScore(b) - getDemandScore(a));
         break;
       case "paid":
-        sorted = sorted.sort((a, b) => b.paid_votes - a.paid_votes);
+        sorted.sort((a, b) => b.paid_votes - a.paid_votes);
         break;
       case "latest":
-        sorted = sorted.sort(
+        sorted.sort(
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
         break;
     }
 
-    setDemands(sorted.slice(0, 10));
-  }
+    return sorted.slice(0, 10);
+  }, [allDemands, activeTab]);
 
   return (
     <section className="py-16">
@@ -71,10 +64,10 @@ export default function RankingList() {
         {["hot", "paid", "latest"].map((tab) => (
           <TabsContent key={tab} value={tab}>
             <div className="bg-bg-card rounded-xl border border-white/5 divide-y divide-white/5">
-              {demands.map((demand, index) => {
+              {rankedDemands.map((demand, index) => {
                 const score = getDemandScore(demand);
                 const gapToPrev =
-                  index > 0 ? getDemandScore(demands[index - 1]) - score : 0;
+                  index > 0 ? getDemandScore(rankedDemands[index - 1]) - score : 0;
 
                 return (
                   <Link
@@ -109,7 +102,7 @@ export default function RankingList() {
                 );
               })}
 
-              {demands.length === 0 && (
+              {rankedDemands.length === 0 && (
                 <div className="px-6 py-12 text-center text-text-secondary">
                   暂无需求，快来提交第一个吧！
                 </div>
