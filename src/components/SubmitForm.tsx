@@ -34,6 +34,20 @@ export default function SubmitForm() {
     e.preventDefault();
     setError("");
 
+    // Rate limit: max 3 submissions per hour
+    const submitKey = "demandly_submit_count";
+    const lastReset = localStorage.getItem("demandly_submit_reset");
+    const now = Date.now();
+    if (!lastReset || now - parseInt(lastReset) > 60 * 60 * 1000) {
+      localStorage.setItem("demandly_submit_reset", now.toString());
+      localStorage.setItem(submitKey, "0");
+    }
+    const count = parseInt(localStorage.getItem(submitKey) || "0");
+    if (count >= 3) {
+      setError("提交过于频繁，请 1 小时后再试");
+      return;
+    }
+
     const targetUser =
       selectedRole === "其他" ? form.custom_role : form.target_user;
 
@@ -58,6 +72,9 @@ export default function SubmitForm() {
         return;
       }
       setSubmitted(true);
+      // Update rate limit counter
+      const newCount = count + 1;
+      localStorage.setItem(submitKey, newCount.toString());
     } catch {
       setError("网络错误，请稍后重试");
     } finally {

@@ -26,6 +26,24 @@ export default function VoteButtons({ demand, compact = false, onVoted }: VoteBu
 
   async function handleVote(type: "like" | "pay") {
     if (loading || voted) return;
+
+    // Rate limit: check cookie for recent vote count
+    const cookieId = getCookie("demandly_cookie_id");
+    if (cookieId) {
+      const rateLimitKey = `demandly_vote_count_${cookieId}`;
+      const lastReset = localStorage.getItem("demandly_vote_reset");
+      const now = Date.now();
+      // Reset counter every 10 minutes
+      if (!lastReset || now - parseInt(lastReset) > 10 * 60 * 1000) {
+        localStorage.setItem("demandly_vote_reset", now.toString());
+        localStorage.setItem(rateLimitKey, "0");
+      }
+      const count = parseInt(localStorage.getItem(rateLimitKey) || "0");
+      if (count >= 10) {
+        return; // Silently block — max 10 votes per 10 min
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -56,6 +74,12 @@ export default function VoteButtons({ demand, compact = false, onVoted }: VoteBu
       }
       setVoted(type);
       setShowShareHint(true);
+      // Update rate limit counter
+      if (cookieId) {
+        const rateLimitKey = `demandly_vote_count_${cookieId}`;
+        const count = parseInt(localStorage.getItem(rateLimitKey) || "0");
+        localStorage.setItem(rateLimitKey, (count + 1).toString());
+      }
       onVoted?.();
     } finally {
       setLoading(false);
