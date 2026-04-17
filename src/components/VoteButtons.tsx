@@ -62,29 +62,46 @@ export default function VoteButtons({ demand, compact = false, onVoted }: VoteBu
     }
   }
 
+  const btnSize = compact ? "sm" : "default";
+
   return (
     <div className="flex items-center gap-2">
       <Button
-        variant={voted === "like" ? "default" : "secondary"}
-        size={compact ? "sm" : "default"}
+        variant="secondary"
+        size={btnSize}
         onClick={() => handleVote("like")}
         disabled={loading || voted !== null}
+        className={`
+          border-0 transition-all duration-200
+          ${voted === "like"
+            ? "glow-button-primary text-white vote-pulse"
+            : "bg-white/[0.06] hover:bg-primary/15 hover:text-primary"
+          }
+        `}
       >
         <ThumbsUp className="size-4" />
         想要 {votes}
       </Button>
       <Button
-        variant={voted === "pay" ? "default" : "secondary"}
-        size={compact ? "sm" : "default"}
+        variant="secondary"
+        size={btnSize}
         onClick={() => handleVote("pay")}
         disabled={loading || voted !== null}
-        className={voted === "pay" ? "bg-accent text-black hover:bg-accent-hover" : ""}
+        className={`
+          border-0 transition-all duration-200
+          ${voted === "pay"
+            ? "glow-button-accent text-black vote-pulse"
+            : "bg-white/[0.06] hover:bg-accent/15 hover:text-accent"
+          }
+        `}
       >
         <Coins className="size-4" />
         愿付费 {paidVotes}
       </Button>
       {showShareHint && (
-        <span className="text-xs text-primary animate-pulse">已投票！分享让更多人看到</span>
+        <span className="text-xs gradient-text font-medium animate-pulse">
+          已投票！分享让更多人看到
+        </span>
       )}
     </div>
   );

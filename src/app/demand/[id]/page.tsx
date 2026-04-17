@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, User, Trophy, TrendingUp, AlertCircle, Lightbulb, Target } from "lucide-react";
 import type { Demand } from "@/types/demand";
 import { getDemandScore } from "@/types/demand";
@@ -63,7 +62,7 @@ export default async function DemandDetailPage({ params }: Props) {
     <main className="py-12 max-w-3xl mx-auto">
       <a
         href="/"
-        className="text-sm text-text-secondary hover:text-text-primary mb-6 inline-flex items-center gap-1"
+        className="text-sm text-text-secondary hover:text-primary transition-colors mb-8 inline-flex items-center gap-1"
       >
         <ArrowLeft className="size-4" />
         返回首页
@@ -73,30 +72,30 @@ export default async function DemandDetailPage({ params }: Props) {
         {status.label}
       </Badge>
 
-      <h1 className="text-3xl font-bold mb-2">{demand.title}</h1>
+      <h1 className="text-3xl font-bold mb-3 leading-tight">{demand.title}</h1>
 
-      <div className="flex items-center gap-4 text-sm text-text-secondary mb-8">
+      <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary mb-8">
         {demand.submitter_name && (
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <User className="size-4" />
             由 @{demand.submitter_name} 发起
           </span>
         )}
         {rank > 0 && (
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <Trophy className="size-4" />
-            当前排名 #{rank}
+            当前排名 <span className="gradient-text font-bold">#{rank}</span>
           </span>
         )}
         {gapToPrev > 0 && (
-          <span className="text-primary flex items-center gap-1">
+          <span className="text-primary flex items-center gap-1.5">
             <TrendingUp className="size-4" />
             距离上一名还差 {gapToPrev} 分
           </span>
         )}
       </div>
 
-      <div className="space-y-4 mb-10">
+      <div className="space-y-3 mb-10">
         <InfoBlock icon={<AlertCircle className="size-4 text-primary" />} label="遇到了什么问题" content={demand.problem} />
         {demand.current_solution && (
           <InfoBlock icon={<Lightbulb className="size-4 text-accent" />} label="当前的解决方案" content={demand.current_solution} />
@@ -114,14 +113,12 @@ export default async function DemandDetailPage({ params }: Props) {
 
 function InfoBlock({ icon, label, content }: { icon: React.ReactNode; label: string; content: string }) {
   return (
-    <Card className="bg-bg-card">
-      <CardContent className="pt-4">
-        <h3 className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-2">
-          {icon}
-          {label}
-        </h3>
-        <p className="text-text-primary">{content}</p>
-      </CardContent>
-    </Card>
+    <div className="glass-card p-5">
+      <h3 className="text-xs font-medium text-text-muted mb-2 flex items-center gap-2 uppercase tracking-wider">
+        {icon}
+        {label}
+      </h3>
+      <p className="text-text-primary leading-relaxed">{content}</p>
+    </div>
   );
 }

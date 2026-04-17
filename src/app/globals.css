@@ -5,10 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: #0F1115;
-  --color-foreground: #E4E4E7;
-  --color-bg: #0F1115;
-  --color-bg-card: #1A1D23;
+  --color-background: #0A0B0E;
+  --color-foreground: #E8E8ED;
+  --color-bg: #0A0B0E;
+  --color-bg-card: #12141A;
+  --color-bg-surface: #161921;
+  --color-bg-elevated: #1C1F2A;
   --color-bg-hover: #252830;
   --color-primary: #6C5CE7;
   --color-primary-hover: #7B6CF0;
@@ -16,8 +18,9 @@
   --color-accent-hover: #33DAFF;
   --color-success: #00E676;
   --color-danger: #FF5252;
-  --color-text-primary: #E4E4E7;
-  --color-text-secondary: #9CA3AF;
+  --color-text-primary: #E8E8ED;
+  --color-text-secondary: #8B8FA3;
+  --color-text-muted: #5A5E72;
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -62,89 +65,92 @@ html {
 }
 
 body {
-  background-color: #0F1115;
-  color: #E4E4E7;
+  background-color: #0A0B0E;
+  color: #E8E8ED;
 }
 
-/* 自定义滚动条 */
+/* ===== 自定义滚动条 ===== */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F1115;
+  background: #0A0B0E;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 3px;
+  background: #2A2D3A;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3D4A;
 }
 
-/* shadcn/ui 主题变量 — 强制深色 */
+/* ===== shadcn/ui 主题变量 ===== */
 :root {
-  --background: oklch(0.07 0.005 280);
-  --foreground: oklch(0.9 0 0);
-  --card: oklch(0.13 0.005 280);
-  --card-foreground: oklch(0.9 0 0);
-  --popover: oklch(0.13 0.005 280);
-  --popover-foreground: oklch(0.9 0 0);
+  --background: oklch(0.06 0.005 280);
+  --foreground: oklch(0.92 0 0);
+  --card: oklch(0.10 0.006 280);
+  --card-foreground: oklch(0.92 0 0);
+  --popover: oklch(0.10 0.006 280);
+  --popover-foreground: oklch(0.92 0 0);
   --primary: oklch(0.55 0.2 280);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.18 0.005 280);
-  --secondary-foreground: oklch(0.9 0 0);
-  --muted: oklch(0.18 0.005 280);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.18 0.01 230);
-  --accent-foreground: oklch(0.9 0 0);
+  --secondary: oklch(0.15 0.006 280);
+  --secondary-foreground: oklch(0.88 0 0);
+  --muted: oklch(0.15 0.006 280);
+  --muted-foreground: oklch(0.62 0 0);
+  --accent: oklch(0.16 0.01 230);
+  --accent-foreground: oklch(0.92 0 0);
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 6%);
+  --input: oklch(1 0 0 / 10%);
   --ring: oklch(0.55 0.2 280);
   --chart-1: oklch(0.6 0.2 280);
   --chart-2: oklch(0.65 0.15 230);
   --chart-3: oklch(0.7 0.15 160);
   --chart-4: oklch(0.75 0.12 60);
   --chart-5: oklch(0.65 0.1 30);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.13 0.005 280);
-  --sidebar-foreground: oklch(0.9 0 0);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.10 0.006 280);
+  --sidebar-foreground: oklch(0.92 0 0);
   --sidebar-primary: oklch(0.55 0.2 280);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.18 0.005 280);
-  --sidebar-accent-foreground: oklch(0.9 0 0);
-  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-accent: oklch(0.15 0.006 280);
+  --sidebar-accent-foreground: oklch(0.92 0 0);
+  --sidebar-border: oklch(1 0 0 / 6%);
   --sidebar-ring: oklch(0.55 0.2 280);
 }
 
 .dark {
-  --background: oklch(0.07 0.005 280);
-  --foreground: oklch(0.9 0 0);
-  --card: oklch(0.13 0.005 280);
-  --card-foreground: oklch(0.9 0 0);
-  --popover: oklch(0.13 0.005 280);
-  --popover-foreground: oklch(0.9 0 0);
+  --background: oklch(0.06 0.005 280);
+  --foreground: oklch(0.92 0 0);
+  --card: oklch(0.10 0.006 280);
+  --card-foreground: oklch(0.92 0 0);
+  --popover: oklch(0.10 0.006 280);
+  --popover-foreground: oklch(0.92 0 0);
   --primary: oklch(0.55 0.2 280);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.18 0.005 280);
-  --secondary-foreground: oklch(0.9 0 0);
-  --muted: oklch(0.18 0.005 280);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.18 0.01 230);
-  --accent-foreground: oklch(0.9 0 0);
+  --secondary: oklch(0.15 0.006 280);
+  --secondary-foreground: oklch(0.88 0 0);
+  --muted: oklch(0.15 0.006 280);
+  --muted-foreground: oklch(0.62 0 0);
+  --accent: oklch(0.16 0.01 230);
+  --accent-foreground: oklch(0.92 0 0);
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 6%);
+  --input: oklch(1 0 0 / 10%);
   --ring: oklch(0.55 0.2 280);
   --chart-1: oklch(0.6 0.2 280);
   --chart-2: oklch(0.65 0.15 230);
   --chart-3: oklch(0.7 0.15 160);
   --chart-4: oklch(0.75 0.12 60);
   --chart-5: oklch(0.65 0.1 30);
-  --sidebar: oklch(0.13 0.005 280);
-  --sidebar-foreground: oklch(0.9 0 0);
+  --sidebar: oklch(0.10 0.006 280);
+  --sidebar-foreground: oklch(0.92 0 0);
   --sidebar-primary: oklch(0.55 0.2 280);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.18 0.005 280);
-  --sidebar-accent-foreground: oklch(0.9 0 0);
-  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-accent: oklch(0.15 0.006 280);
+  --sidebar-accent-foreground: oklch(0.92 0 0);
+  --sidebar-border: oklch(1 0 0 / 6%);
   --sidebar-ring: oklch(0.55 0.2 280);
 }
 
@@ -158,4 +164,122 @@ body {
   html {
     @apply font-sans;
   }
+}
+
+/* ===== 科技风背景效果 ===== */
+
+/* 点阵网格 */
+.bg-grid {
+  background-image: radial-gradient(circle, rgba(108, 92, 231, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Hero 区域径向光晕 */
+.hero-glow {
+  background:
+    radial-gradient(ellipse 800px 500px at 50% 0%, rgba(108, 92, 231, 0.1), transparent),
+    radial-gradient(ellipse 600px 400px at 80% 40%, rgba(0, 209, 255, 0.05), transparent);
+}
+
+/* ===== Glass 卡片 ===== */
+.glass-card {
+  background: rgba(18, 20, 26, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+}
+.glass-card:hover {
+  background: rgba(28, 31, 42, 0.7);
+  border-color: rgba(108, 92, 231, 0.25);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(108, 92, 231, 0.08);
+}
+
+/* 渐变边框卡片（hover 时显示） */
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #6C5CE7, #00D1FF, #6C5CE7);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.glow-border:hover::before {
+  opacity: 0.6;
+}
+
+/* ===== 渐变文字 ===== */
+.gradient-text {
+  background: linear-gradient(135deg, #6C5CE7, #00D1FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== 发光按钮 ===== */
+.glow-button-primary {
+  background: linear-gradient(135deg, #6C5CE7, #5B4BD5);
+  box-shadow: 0 2px 12px rgba(108, 92, 231, 0.3);
+  transition: all 0.2s ease;
+}
+.glow-button-primary:hover {
+  box-shadow:
+    0 4px 20px rgba(108, 92, 231, 0.45),
+    0 0 40px rgba(108, 92, 231, 0.15);
+}
+
+.glow-button-accent {
+  background: linear-gradient(135deg, #00D1FF, #00B4DB);
+  box-shadow: 0 2px 12px rgba(0, 209, 255, 0.25);
+  transition: all 0.2s ease;
+}
+.glow-button-accent:hover {
+  box-shadow:
+    0 4px 20px rgba(0, 209, 255, 0.4),
+    0 0 40px rgba(0, 209, 255, 0.12);
+}
+
+/* ===== Section 分隔线 ===== */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.2), rgba(0, 209, 255, 0.2), transparent);
+}
+
+/* ===== 排名徽章 ===== */
+.rank-top {
+  background: linear-gradient(135deg, #6C5CE7, #00D1FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== 投票按钮脉冲动画 ===== */
+@keyframes vote-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(108, 92, 231, 0); }
+}
+.vote-pulse {
+  animation: vote-pulse 2s ease-in-out infinite;
+}
+
+/* ===== 呼吸光效 ===== */
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
 }

@@ -56,15 +56,18 @@ export default function HomePage() {
     <main>
       <HeroSection />
 
+      {/* 分隔线 */}
+      <div className="section-divider" />
+
       {/* 热门需求 */}
       <section id="demands" className="py-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Flame className="size-7 text-primary" />
+            <Flame className="size-7 gradient-text" style={{ WebkitTextFillColor: 'unset', color: '#6C5CE7' }} />
             今日最热需求
           </h2>
           <Link href="/submit">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="border-white/10 hover:border-primary/40 hover:bg-primary/5">
               <Plus className="size-4" />
               提交需求
             </Button>
@@ -106,24 +109,32 @@ export default function HomePage() {
         )}
       </section>
 
+      <div className="section-divider" />
       <RankingList allDemands={demands} />
+
+      <div className="section-divider" />
       <LaunchedProducts products={products} />
 
+      <div className="section-divider" />
+
       {/* CTA */}
-      <section className="py-20 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">
-          没找到你想要的？
-        </h2>
-        <p className="text-text-secondary mb-8">
-          写下你的需求，也许下一个爆款就是它
-        </p>
-        <Link href="/submit">
-          <Button size="lg">
-            提交需求
-          </Button>
-        </Link>
-        <div className="mt-6 text-sm text-text-secondary">
-          每周开发票数最高的需求
+      <section className="py-20 text-center relative">
+        <div className="absolute inset-0 hero-glow pointer-events-none opacity-50" />
+        <div className="relative">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            没找到你想要的？
+          </h2>
+          <p className="text-text-secondary mb-8">
+            写下你的需求，也许下一个爆款就是它
+          </p>
+          <Link href="/submit">
+            <Button size="lg" className="glow-button-primary border-0">
+              提交需求
+            </Button>
+          </Link>
+          <div className="mt-6 text-sm text-text-muted">
+            每周开发票数最高的需求
+          </div>
         </div>
       </section>
     </main>

@@ -34,7 +34,7 @@ export default function ShareModal({
     typeof window !== "undefined"
       ? `${window.location.origin}/demand/${demandId}`
       : "";
-  const shareText = `我发起的需求正在冲榜！🔥 ${demandTitle}，当前排名 #${rank}，帮我顶上去！`;
+  const shareText = `我发起的需求正在冲榜！ ${demandTitle}，当前排名 #${rank}，帮我顶上去！`;
 
   async function copyLink() {
     await navigator.clipboard.writeText(shareUrl);
@@ -51,18 +51,18 @@ export default function ShareModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-bg-card border-white/10">
+      <DialogContent className="bg-bg-card border-white/[0.08]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            🎉 投票成功！
+            投票成功！
           </DialogTitle>
-          <DialogDescription>
-            「{demandTitle}」当前排名 #{rank}
+          <DialogDescription className="text-text-secondary">
+            「{demandTitle}」当前排名 <span className="gradient-text font-bold">#{rank}</span>
           </DialogDescription>
         </DialogHeader>
 
         {gapToNext > 0 && (
-          <div className="bg-primary/10 rounded-lg px-4 py-3 text-sm">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-3 text-sm">
             <span className="text-primary font-medium">
               再获得 {gapToNext} 票就会被开发
             </span>
@@ -74,11 +74,11 @@ export default function ShareModal({
         </p>
 
         <div className="flex gap-3">
-          <Button onClick={copyLink} className="flex-1">
+          <Button onClick={copyLink} className="flex-1 glow-button-primary border-0">
             {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             {copied ? "已复制！" : "复制链接"}
           </Button>
-          <Button variant="outline" onClick={shareToTwitter} className="flex-1">
+          <Button variant="outline" onClick={shareToTwitter} className="flex-1 border-white/10 hover:border-primary/40">
             <Share2 className="size-4" />
             分享到 Twitter
           </Button>
