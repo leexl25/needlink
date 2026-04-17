@@ -283,3 +283,12 @@ body {
 .animate-breathe {
   animation: breathe 3s ease-in-out infinite;
 }
+
+/* ===== 隐藏滚动条 ===== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
