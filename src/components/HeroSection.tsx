@@ -18,14 +18,18 @@ export default function HeroSection() {
           你投票，我开发。票数最高的需求，每周上线一个。
         </p>
         <div className="mt-8 flex gap-4 justify-center md:justify-start">
-          <Button render={<Link href="#demands" />} size="lg">
-            <Flame className="size-4" />
-            查看热门需求
-          </Button>
-          <Button render={<Link href="/submit" />} variant="outline" size="lg">
-            <Plus className="size-4" />
-            提一个需求
-          </Button>
+          <Link href="#demands">
+            <Button size="lg">
+              <Flame className="size-4" />
+              查看热门需求
+            </Button>
+          </Link>
+          <Link href="/submit">
+            <Button variant="outline" size="lg">
+              <Plus className="size-4" />
+              提一个需求
+            </Button>
+          </Link>
         </div>
       </div>
 
