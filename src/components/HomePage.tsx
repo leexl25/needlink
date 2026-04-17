@@ -134,6 +134,11 @@ export default function HomePage() {
 
       {/* 双栏：排行榜 + 最新需求 */}
       <section className="py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-xl md:text-2xl font-bold">排行榜</h2>
+          <p className="text-sm text-text-muted mt-1">实时票数排名，你的投票决定开发优先级</p>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0">
             <RankingList allDemands={demands} />
