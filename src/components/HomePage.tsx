@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { getDemandScore } from "@/types/demand";
@@ -18,25 +18,34 @@ export default function HomePage() {
   const [demands, setDemands] = useState<Demand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const initialFetchDone = useRef(false);
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
-    try {
+  // 初始加载：只跑一次
+  useEffect(() => {
+    if (initialFetchDone.current) return;
+    initialFetchDone.current = true;
+
+    async function load() {
       const [demandsRes, productsRes] = await Promise.all([
         supabase.from("demands").select("*").limit(50),
         supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
       ]);
-
       if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
       if (productsRes.data) setProducts(productsRes.data as Product[]);
-    } finally {
       setLoading(false);
     }
+    load();
   }, []);
 
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+  // 投票后刷新：不触发 loading 状态
+  const refresh = useCallback(async () => {
+    const [demandsRes, productsRes] = await Promise.all([
+      supabase.from("demands").select("*").limit(50),
+      supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
+    ]);
+    if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
+    if (productsRes.data) setProducts(productsRes.data as Product[]);
+  }, []);
 
   // 首页展示：按综合分排序取前 9
   const topDemands = [...demands]
@@ -91,7 +100,7 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {topDemands.map((demand) => (
-              <DemandCard key={demand.id} demand={demand} onVoted={fetchAll} />
+              <DemandCard key={demand.id} demand={demand} onVoted={refresh} />
             ))}
           </div>
         )}
