@@ -145,6 +145,7 @@ export default function AdminDemandsPage() {
                 <a
                   href={`/demand/${demand.id}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-primary hover:underline"
                 >
                   查看

@@ -58,9 +58,15 @@ export default function RankingList({ allDemands }: RankingListProps) {
         <TabsContent key={tab} value={tab}>
           <div className="glass-card overflow-hidden mt-4">
             {rankedDemands.map((demand, index) => {
-              const score = getDemandScore(demand);
-              const gapToPrev =
-                index > 0 ? getDemandScore(rankedDemands[index - 1]) - score : 0;
+              const score = tab === "paid"
+                ? demand.paid_votes
+                : getDemandScore(demand);
+              const prevScore = index > 0
+                ? (tab === "paid"
+                  ? rankedDemands[index - 1].paid_votes
+                  : getDemandScore(rankedDemands[index - 1]))
+                : 0;
+              const gapToPrev = index > 0 ? prevScore - score : 0;
 
               return (
                 <Link

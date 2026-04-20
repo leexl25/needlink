@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "密码错误" }, { status: 401 });
     }
 
-    const token = createSessionToken();
+    const token = await createSessionToken();
     const response = NextResponse.json({ success: true });
     response.cookies.set(SESSION_COOKIE_NAME, token, COOKIE_OPTIONS);
 

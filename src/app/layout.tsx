@@ -3,7 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Demandly - 做大家真正想要的产品",
+  title: "NeedLink - 做大家真正想要的产品",
   description:
     "你投票，我开发。提交你的需求，票数最高的需求每周上线一个。",
 };

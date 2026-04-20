@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LayoutDashboard, FileText, Package, LogOut, ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "管理后台 - Demandly",
+  title: "管理后台 - NeedLink",
 };
 
 export default function AdminLayout({
@@ -15,7 +15,7 @@ export default function AdminLayout({
       {/* 侧边栏 */}
       <aside className="w-56 shrink-0 border-r border-white/[0.06] bg-bg-surface p-4 hidden md:flex flex-col">
         <div className="mb-8">
-          <h1 className="text-sm font-bold gradient-text">Demandly</h1>
+          <h1 className="text-sm font-bold gradient-text">NeedLink</h1>
           <p className="text-xs text-text-muted">管理后台</p>
         </div>
 
@@ -46,7 +46,10 @@ export default function AdminLayout({
           <Link href="/admin" className="text-sm text-primary font-medium">仪表盘</Link>
           <Link href="/admin/demands" className="text-sm text-text-secondary">需求</Link>
           <Link href="/admin/products" className="text-sm text-text-secondary">产品</Link>
-          <Link href="/" className="text-sm text-text-muted ml-auto">返回前台</Link>
+          <div className="ml-auto flex items-center gap-3">
+            <Link href="/" className="text-sm text-text-muted">返回前台</Link>
+            <LogoutButton />
+          </div>
         </div>
         {children}
       </main>

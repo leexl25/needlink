@@ -20,6 +20,7 @@ export default function HomePage() {
   const [demands, setDemands] = useState<Demand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
@@ -27,24 +28,34 @@ export default function HomePage() {
     initialFetchDone.current = true;
 
     async function load() {
+      try {
+        const [demandsRes, productsRes] = await Promise.all([
+          supabase.from("demands").select("*").limit(50),
+          supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
+        ]);
+        if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
+        if (productsRes.data) setProducts(productsRes.data as Product[]);
+        setLoading(false);
+      } catch {
+        setLoading(false);
+        setError(true);
+      }
+    }
+    load();
+  }, []);
+
+  const refresh = useCallback(async () => {
+    try {
       const [demandsRes, productsRes] = await Promise.all([
         supabase.from("demands").select("*").limit(50),
         supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
       ]);
       if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
       if (productsRes.data) setProducts(productsRes.data as Product[]);
-      setLoading(false);
+      setError(false);
+    } catch {
+      setError(true);
     }
-    load();
-  }, []);
-
-  const refresh = useCallback(async () => {
-    const [demandsRes, productsRes] = await Promise.all([
-      supabase.from("demands").select("*").limit(50),
-      supabase.from("products").select("*").order("launched_at", { ascending: false }).limit(6),
-    ]);
-    if (demandsRes.data) setDemands(demandsRes.data as Demand[]);
-    if (productsRes.data) setProducts(productsRes.data as Product[]);
   }, []);
 
   const sortedDemands = [...demands].sort((a, b) => getDemandScore(b) - getDemandScore(a));
@@ -53,7 +64,15 @@ export default function HomePage() {
 
   return (
     <main>
-      <HeroSection />
+      {error && (
+        <div className="text-center py-4">
+          <p className="text-text-secondary text-sm mb-2">数据加载失败</p>
+          <Button variant="outline" size="sm" onClick={refresh}>
+            重新加载
+          </Button>
+        </div>
+      )}
+      <HeroSection demands={demands} />
 
       {/* 统计条 */}
       <StatsBar demands={demands} products={products} />

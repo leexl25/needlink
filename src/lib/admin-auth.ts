@@ -1,48 +1,58 @@
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? "" : "admin123");
 const SESSION_SECRET = process.env.SESSION_SECRET || "demandly-secret-2024";
 
+if (process.env.NODE_ENV === "production" && !process.env.ADMIN_PASSWORD) {
+  console.error("FATAL: ADMIN_PASSWORD must be set in production");
+}
+
 export function verifyPassword(password: string): boolean {
+  if (!ADMIN_PASSWORD) return false;
   return password === ADMIN_PASSWORD;
 }
 
-export function createSessionToken(): string {
+async function signToken(data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(SESSION_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export async function createSessionToken(): Promise<string> {
   const payload = {
     ts: Date.now(),
     rand: crypto.randomUUID(),
   };
-  // Base64 encode + simple HMAC-like signature
-  const data = Buffer.from(JSON.stringify(payload)).toString("base64");
-  const sig = hashWithSecret(data);
+  const data = btoa(JSON.stringify(payload));
+  const sig = await signToken(data);
   return `${data}.${sig}`;
 }
 
-export function verifySessionToken(token: string): boolean {
+export async function verifySessionToken(token: string): Promise<boolean> {
   try {
     const [data, sig] = token.split(".");
     if (!data || !sig) return false;
-    const expectedSig = hashWithSecret(data);
-    if (sig !== expectedSig) return false;
-    const payload = JSON.parse(
-      Buffer.from(data, "base64").toString("utf-8")
-    );
-    // Session valid for 7 days
+    const expectedSig = await signToken(data);
+    if (sig.length !== expectedSig.length) return false;
+    // Constant-time compare
+    let mismatch = 0;
+    for (let i = 0; i < sig.length; i++) {
+      mismatch |= sig.charCodeAt(i) ^ expectedSig.charCodeAt(i);
+    }
+    if (mismatch !== 0) return false;
+    const payload = JSON.parse(atob(data));
     if (Date.now() - payload.ts > 7 * 24 * 60 * 60 * 1000) return false;
     return true;
   } catch {
     return false;
   }
-}
-
-function hashWithSecret(data: string): string {
-  // Simple hash for MVP — not cryptographically ideal but sufficient
-  const combined = `${SESSION_SECRET}:${data}`;
-  let hash = 0;
-  for (let i = 0; i < combined.length; i++) {
-    const char = combined.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0;
-  }
-  return Math.abs(hash).toString(36);
 }
 
 export const SESSION_COOKIE_NAME = "demandly_admin_session";
@@ -51,5 +61,5 @@ export const COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
   path: "/",
-  maxAge: 7 * 24 * 60 * 60, // 7 days
+  maxAge: 7 * 24 * 60 * 60,
 };

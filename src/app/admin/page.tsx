@@ -24,7 +24,7 @@ export default async function AdminDashboard() {
       totalVotes = demandsRes.data.reduce((sum, d) => sum + (d.votes || 0) + (d.paid_votes || 0), 0);
     }
     totalProducts = productsRes.count || 0;
-    // votesRes.count gives total individual votes
+    totalVotes = votesRes.count || totalVotes;
   } catch {
     // fallback to 0
   }

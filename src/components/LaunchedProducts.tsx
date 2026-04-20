@@ -42,7 +42,7 @@ export default function LaunchedProducts({ products }: LaunchedProductsProps) {
             return (
               <div
                 key={product.id}
-                className="glass-card glow-border p-5 shrink-0 w-72 snap-start"
+                className="glass-card glow-border p-5 shrink-0 w-72 snap-start group"
               >
                 <h3 className="font-semibold mb-2 group-hover:text-accent transition-colors">
                   {product.name}

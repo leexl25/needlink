@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
+  // Independent auth check
+  const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  if (!sessionToken || !verifySessionToken(sessionToken)) {
+    return NextResponse.json({ error: "未授权" }, { status: 401 });
+  }
+
   try {
     const { name, description, launch_url, demand_id, users_count } = await request.json();
 

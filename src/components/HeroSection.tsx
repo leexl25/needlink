@@ -3,8 +3,18 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Flame, Plus, Zap, TrendingUp } from "lucide-react";
+import { getDemandScore } from "@/types/demand";
+import type { Demand } from "@/types/demand";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  demands?: Demand[];
+}
+
+export default function HeroSection({ demands = [] }: HeroSectionProps) {
+  const topDemands = [...demands]
+    .sort((a, b) => getDemandScore(b) - getDemandScore(a))
+    .slice(0, 5);
+
   return (
     <section className="relative py-20 md:py-28 overflow-hidden">
       {/* 背景光晕 */}
@@ -52,7 +62,7 @@ export default function HeroSection() {
                 实时需求热榜
               </h3>
             </div>
-            <TrendingPreview />
+            <TrendingPreview demands={topDemands} />
           </div>
         </div>
       </div>
@@ -60,40 +70,39 @@ export default function HeroSection() {
   );
 }
 
-function TrendingPreview() {
-  const items = [
-    { title: "AI 自动生成周报/日报", votes: 1280, change: "+12%" },
-    { title: "录音自动转会议纪要", votes: 940, change: "+8%" },
-    { title: "PDF 批量翻译保留格式", votes: 870, change: "+15%" },
-    { title: "一句话自动生成 PPT", votes: 756, change: "+5%" },
-    { title: "AI 写简历 + 针对性优化", votes: 623, change: "+9%" },
-  ];
+function TrendingPreview({ demands }: { demands: Demand[] }) {
+  if (demands.length === 0) {
+    return (
+      <div className="py-6 text-center text-text-muted text-sm">
+        暂无需求，快去提交第一个吧
+      </div>
+    );
+  }
 
   return (
     <ul className="space-y-3">
-      {items.map((item, i) => (
-        <li
-          key={i}
-          className="flex items-center justify-between text-sm group cursor-pointer rounded-lg px-2 py-2 -mx-2 hover:bg-white/[0.03] transition-colors"
-        >
-          <span className="text-text-secondary group-hover:text-text-primary transition-colors flex items-center gap-3">
-            <span className={`font-mono text-xs w-5 text-right ${i < 3 ? 'gradient-text font-bold' : 'text-text-muted'}`}>
-              {i + 1}
-            </span>
-            {item.title}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="text-xs text-success hidden group-hover:inline-flex items-center">
-              <TrendingUp className="size-3" />
-              {item.change}
-            </span>
-            <span className="text-primary font-medium flex items-center gap-1 text-xs">
+      {demands.map((item, i) => {
+        const score = getDemandScore(item);
+        return (
+          <li
+            key={item.id}
+            className="flex items-center justify-between text-sm group cursor-pointer rounded-lg px-2 py-2 -mx-2 hover:bg-white/[0.03] transition-colors"
+          >
+            <Link href={`/demand/${item.id}`} className="flex items-center gap-3 min-w-0 flex-1">
+              <span className={`font-mono text-xs w-5 text-right ${i < 3 ? 'gradient-text font-bold' : 'text-text-muted'}`}>
+                {i + 1}
+              </span>
+              <span className="text-text-secondary group-hover:text-text-primary transition-colors truncate">
+                {item.title}
+              </span>
+            </Link>
+            <span className="text-primary font-medium flex items-center gap-1 text-xs shrink-0 ml-2">
               <Flame className="size-3" />
-              {item.votes}
+              {score}
             </span>
-          </span>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

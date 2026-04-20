@@ -106,7 +106,7 @@ export default async function DemandDetailPage({ params }: Props) {
         <InfoBlock icon={<Target className="size-4 text-primary" />} label="目标用户" content={demand.target_user} />
       </div>
 
-      <DemandDetailClient demand={demand} rank={rank} />
+      <DemandDetailClient demand={demand} rank={rank} gapToPrev={gapToPrev} />
     </main>
   );
 }

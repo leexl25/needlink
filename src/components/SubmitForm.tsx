@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 const ROLES = ["上班族", "自媒体", "学生", "开发者", "电商卖家", "设计师", "其他"];
 
@@ -58,17 +58,23 @@ export default function SubmitForm() {
 
     setSubmitting(true);
     try {
-      const { error: insertError } = await supabase.from("demands").insert({
-        title: form.title,
-        problem: form.problem,
-        current_solution: form.current_solution || null,
-        ideal_solution: form.ideal_solution || null,
-        target_user: targetUser,
-        submitter_name: form.submitter_name || null,
+      const res = await fetch("/api/demands", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          problem: form.problem,
+          current_solution: form.current_solution || null,
+          ideal_solution: form.ideal_solution || null,
+          target_user: targetUser,
+          submitter_name: form.submitter_name || null,
+        }),
       });
 
-      if (insertError) {
-        setError("提交失败，请稍后重试");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "提交失败，请稍后重试");
         return;
       }
       setSubmitted(true);
@@ -92,9 +98,11 @@ export default function SubmitForm() {
         <p className="text-text-secondary mb-8">
           审核通过后会在首页展示，请关注排行榜。
         </p>
-        <Button render={<a href="/" />} size="lg" className="glow-button-primary border-0">
-          返回首页
-        </Button>
+        <Link href="/">
+          <Button size="lg" className="glow-button-primary border-0">
+            返回首页
+          </Button>
+        </Link>
       </div>
     );
   }

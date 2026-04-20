@@ -1,7 +1,7 @@
 import SubmitForm from "@/components/SubmitForm";
 
 export const metadata = {
-  title: "提交需求 - Demandly",
+  title: "提交需求 - NeedLink",
 };
 
 export default function SubmitPage() {
